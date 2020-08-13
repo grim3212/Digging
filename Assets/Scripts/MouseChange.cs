@@ -15,16 +15,16 @@ public class MouseChange : MonoBehaviour {
 		//Detect when mouse is clicked
 		if (Input.GetMouseButtonDown (0)) {
 
-//Get position of the mouseclick
-         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-         //Convert position of the mouseclick to the position of the tile located at the mouseclick
-         Vector3Int coordinate = grid.WorldToCell(mouseWorldPos);
-         //Display tile position in log
-         Debug.Log(coordinate);
-         //Display the sprite value of the tile in log *SUCCESS*
-         Debug.Log(tilemap.GetSprite(coordinate));
+			//Get position of the mouseclick
+			Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+			//Convert position of the mouseclick to the position of the tile located at the mouseclick
+			Vector3Int coordinate = grid.WorldToCell (mouseWorldPos);
+			//Display tile position in log
+			Debug.Log (coordinate);
+			//Display the sprite value of the tile in log *SUCCESS*
+			Debug.Log (tilemap.GetSprite (coordinate));
 			//Tile tile = tilemap.GetTile(coordinate);
-			tilemap.SetTile(coordinate, clearTile);
+			tilemap.SetTile (coordinate, clearTile);
 			//tilemap.RefreshTile(coordinate);
 		}
 	}
