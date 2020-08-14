@@ -15,6 +15,11 @@ class Player : MonoBehaviour {
 	private Vector3 endPosition;
 	private float t;
 	private float factor;
+	private float maxY;
+
+	public void Start () {
+		maxY = grid.CellToLocal (map.cellBounds.max).y + 0.32f;
+	}
 
 	public void Update () {
 		if (!isMoving) {
@@ -27,9 +32,11 @@ class Player : MonoBehaviour {
 			}
 
 			if (input != Vector2.zero) {
-				RaycastHit2D hit = Physics2D.Raycast (transform.position, input, 0.32f);
-				if (hit.collider == null) {
-					StartCoroutine (move (transform));
+				if (!(input == Vector2.up && (transform.position.y + 0.32f) >= maxY)) {
+					RaycastHit2D hit = Physics2D.Raycast (transform.position, input, 0.32f);
+					if (hit.collider == null) {
+						StartCoroutine (move (transform));
+					}
 				}
 			}
 		}
