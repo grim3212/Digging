@@ -27,7 +27,10 @@ class Player : MonoBehaviour {
 			}
 
 			if (input != Vector2.zero) {
-				StartCoroutine (move (transform));
+				RaycastHit2D hit = Physics2D.Raycast (transform.position, input, 0.32f);
+				if (hit.collider == null) {
+					StartCoroutine (move (transform));
+				}
 			}
 		}
 	}
@@ -38,6 +41,7 @@ class Player : MonoBehaviour {
 		t = 0;
 		endPosition = new Vector3 (startPosition.x + System.Math.Sign (input.x) * gridSize,
 			startPosition.y + System.Math.Sign (input.y) * gridSize, startPosition.z);
+
 		factor = 1f;
 
 		while (t < 1f) {
