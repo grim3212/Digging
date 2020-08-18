@@ -29,6 +29,79 @@ public class Enemy : MonoBehaviour {
 			if (previousDirection != Vector3Int.zero && ValidTile (map.GetTile (coordinate + previousDirection))) {
 				input = new Vector2 (previousDirection.x, previousDirection.y);
 			}
+			else if (previousDirection == Vector3Int.up) {
+				if (ValidTile (map.GetTile (coordinate + Vector3Int.right))) {
+					input = Vector2.right;
+					previousDirection = Vector3Int.right;
+				}
+				else if (ValidTile (map.GetTile (coordinate + Vector3Int.left))) {
+					input = Vector2.left;
+					previousDirection = Vector3Int.left;
+				}
+				else if (ValidTile (map.GetTile (coordinate + Vector3Int.down))) {
+					input = Vector2.down;
+					previousDirection = Vector3Int.down;
+				}
+				else {
+					input = Vector2.zero;
+					previousDirection = Vector3Int.zero;
+				}
+			}
+			else if (previousDirection == Vector3Int.right) {
+				if (ValidTile (map.GetTile (coordinate + Vector3Int.up))) {
+					input = Vector2.up;
+					previousDirection = Vector3Int.up;
+				}
+				else if (ValidTile (map.GetTile (coordinate + Vector3Int.down))) {
+					input = Vector2.down;
+					previousDirection = Vector3Int.down;
+				}
+				else if (ValidTile (map.GetTile (coordinate + Vector3Int.left))) {
+					input = Vector2.left;
+					previousDirection = Vector3Int.left;
+				}
+				else {
+					input = Vector2.zero;
+					previousDirection = Vector3Int.zero;
+				}
+			}
+			else if (previousDirection == Vector3Int.left) {
+				if (ValidTile (map.GetTile (coordinate + Vector3Int.up))) {
+					input = Vector2.up;
+					previousDirection = Vector3Int.up;
+				}
+				else if (ValidTile (map.GetTile (coordinate + Vector3Int.down))) {
+					input = Vector2.down;
+					previousDirection = Vector3Int.down;
+				}
+
+				else if (ValidTile (map.GetTile (coordinate + Vector3Int.right))) {
+					input = Vector2.right;
+					previousDirection = Vector3Int.right;
+				}
+				else {
+					input = Vector2.zero;
+					previousDirection = Vector3Int.zero;
+				}
+			}
+			else if (previousDirection == Vector3Int.down) {
+				if (ValidTile (map.GetTile (coordinate + Vector3Int.left))) {
+					input = Vector2.left;
+					previousDirection = Vector3Int.left;
+				}
+				else if (ValidTile (map.GetTile (coordinate + Vector3Int.right))) {
+					input = Vector2.right;
+					previousDirection = Vector3Int.right;
+				}
+				else if (ValidTile (map.GetTile (coordinate + Vector3Int.up))) {
+					input = Vector2.up;
+					previousDirection = Vector3Int.up;
+				}
+				else {
+					input = Vector2.zero;
+					previousDirection = Vector3Int.zero;
+				}
+			}
 			else if (ValidTile (map.GetTile (coordinate + Vector3Int.up))) {
 				input = Vector2.up;
 				previousDirection = Vector3Int.up;
@@ -52,13 +125,14 @@ public class Enemy : MonoBehaviour {
 
 			if (input != Vector2.zero) {
 				if (!(input == Vector2.up && (transform.position.y + 0.32f) >= maxY)) {
-                    // TODO: Why doesnt this raycast work?
-                    RaycastHit2D hit = Physics2D.Raycast (transform.position, input, 0.32f);
+					// TODO: Why doesnt this raycast work?
+					RaycastHit2D hit = Physics2D.Raycast (transform.position, input, 0.32f);
 					if (hit.collider == null) {
 						StartCoroutine (move (transform));
-					}else {
-                        previousDirection = Vector3Int.zero;
-                    }
+					}
+					else {
+						previousDirection = Vector3Int.zero;
+					}
 				}
 			}
 		}
