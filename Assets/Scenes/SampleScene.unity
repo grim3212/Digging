@@ -128,6 +128,11 @@ Grid:
   m_CorrespondingSourceObject: {fileID: 4463489097742179025, guid: e2e92921554986c41b158801c1ba86c9, type: 3}
   m_PrefabInstance: {fileID: 4463489097795488335}
   m_PrefabAsset: {fileID: 0}
+--- !u!1839735485 &116270206 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 7128737406192600062, guid: e2e92921554986c41b158801c1ba86c9, type: 3}
+  m_PrefabInstance: {fileID: 4463489097795488335}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &752278358
 GameObject:
   m_ObjectHideFlags: 0
@@ -381,6 +386,26 @@ Tilemap:
   m_CorrespondingSourceObject: {fileID: 1472087940940651906, guid: e2e92921554986c41b158801c1ba86c9, type: 3}
   m_PrefabInstance: {fileID: 4463489097795488335}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1591810247 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7108556082320263160, guid: b0f313321484d1b47ab86cafe16c5fb0, type: 3}
+  m_PrefabInstance: {fileID: 7108556082084195005}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1591810248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1591810247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1197157e297befd429022eb6a3a881c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bounds: {fileID: 116270206}
+  paths: {fileID: 1333009922}
+  player: {fileID: 752278361}
 --- !u!1001 &4463489097795488335
 PrefabInstance:
   m_ObjectHideFlags: 0
