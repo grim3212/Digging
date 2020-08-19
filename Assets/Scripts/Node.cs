@@ -18,7 +18,19 @@ public class Node {
 	}
 
 	public bool Equals (Node node) {
-		return this.position == node.position && this.parent == node.parent;
+		if (Object.ReferenceEquals (node, null)) {
+			return false;
+		}
+
+		if (Object.ReferenceEquals (this, node)) {
+			return true;
+		}
+
+		if (this.GetType () != node.GetType ()) {
+			return false;
+		}
+
+		return this.position == node.position;
 	}
 
 	public override int GetHashCode () {
@@ -26,17 +38,17 @@ public class Node {
 	}
 
 	public static bool operator == (Node left, Node right) {
-		return left.position == right.position;
+		if (Object.ReferenceEquals (left, null)) {
+			if (Object.ReferenceEquals (right, null)) {
+				return true;
+			}
+
+			return false;
+		}
+		return left.Equals (right);
 	}
 
 	public static bool operator != (Node left, Node right) {
-		return left.position != right.position;
-	}
-
-	public static bool operator < (Node left, Node right) {
-		return left.cost < right.cost;
-	}
-	public static bool operator > (Node left, Node right) {
-		return left.cost > right.cost;
+		return !(left == right);
 	}
 }

@@ -18,16 +18,20 @@ public class Pathfinding : MonoBehaviour {
 		// The extra one is to account for the top walkable area on the map
 		this.gridHeight = bounds.size.y + 1;
 
-		this.min = bounds.localBounds.min;
-		this.max = bounds.localBounds.max;
+		this.min = bounds.cellBounds.min;
+		this.max = bounds.cellBounds.max;
 	}
 
 	// Update is called once per frame
 	void Update () {
+
+		// Use an is moving flag
+		// If not moving run astar and calculate the next position to move to
+		// If moving do nothing and let the coroutine finish
 		AStar ();
 	}
 
-	private List<Vector3Int> AStar () {
+	private Vector3Int? AStar () {
 		Queue<Node> openNodes = new Queue<Node> ();
 		List<Node> closedNodes = new List<Node> ();
 
@@ -53,7 +57,7 @@ public class Pathfinding : MonoBehaviour {
 			closedNodes.Add (currentNode);
 
 			if (currentNode == endNode) {
-				return Path (currentNode);
+				return NextLocation (currentNode);
 			}
 
 
@@ -63,7 +67,6 @@ public class Pathfinding : MonoBehaviour {
 
 				// Need to adjust this check to make sure that we are only looking in the correct bounds
 				if (nodePos.x > this.max.x || nodePos.x < this.min.x || nodePos.y > this.max.y || nodePos.y < this.min.y) {
-					Debug.Log ("Child incorrect location");
 					continue;
 				}
 
@@ -91,7 +94,7 @@ public class Pathfinding : MonoBehaviour {
 		return null;
 	}
 
-	private List<Vector3Int> Path (Node node) {
+	private Vector3Int NextLocation (Node node) {
 		List<Vector3Int> path = new List<Vector3Int> ();
 		Node current = node;
 
@@ -100,10 +103,7 @@ public class Pathfinding : MonoBehaviour {
 			current = current.parent;
 		}
 
-		// We want the reverse path
-		path.Reverse ();
-
-		Debug.Log ("Found correct path : " + path.ToString ());
-		return path;
+		// We only need the last position to move to
+		return path[path.Count - 1];
 	}
 }
