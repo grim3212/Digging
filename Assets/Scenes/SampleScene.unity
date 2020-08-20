@@ -403,9 +403,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1197157e297befd429022eb6a3a881c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  grid: {fileID: 86872222}
   bounds: {fileID: 116270206}
   paths: {fileID: 1333009922}
+  clearTile: {fileID: 11400000, guid: 749e1e4176d2ff049a181e4f9a13653f, type: 2}
   player: {fileID: 752278361}
+  moveSpeed: 1
+  gridSize: 0.32
 --- !u!1001 &4463489097795488335
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -830,5 +834,9 @@ PrefabInstance:
       propertyPath: map
       value: 
       objectReference: {fileID: 1333009922}
+    - target: {fileID: 7108556082320263163, guid: b0f313321484d1b47ab86cafe16c5fb0, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b0f313321484d1b47ab86cafe16c5fb0, type: 3}

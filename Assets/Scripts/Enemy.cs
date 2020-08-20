@@ -125,7 +125,6 @@ public class Enemy : MonoBehaviour {
 
 			if (input != Vector2.zero) {
 				if (!(input == Vector2.up && (transform.position.y + 0.32f) >= maxY)) {
-					// TODO: Why doesnt this raycast work?
 					RaycastHit2D hit = Physics2D.Raycast (transform.position, input, 0.32f);
 					if (hit.collider == null) {
 						StartCoroutine (move (transform));

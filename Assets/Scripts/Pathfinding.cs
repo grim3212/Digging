@@ -5,13 +5,16 @@ using UnityEngine.Tilemaps;
 
 public class Pathfinding : MonoBehaviour {
 
+	public Grid grid;
 	public Tilemap bounds;
 	public Tilemap paths;
+	public Tile clearTile;
 	public Transform player;
 	private int gridWidth;
 	private int gridHeight;
 	private Vector3 min;
 	private Vector3 max;
+	private bool isMoving = false;
 
 	void Start () {
 		this.gridWidth = bounds.size.x;
@@ -25,18 +28,54 @@ public class Pathfinding : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+		if (!isMoving) {
+			Node nextLoc = AStar ();
+
+			if (nextLoc != null) {
+				input = nextLoc.direction;
+				StartCoroutine (move (transform));
+			}
+		}
+
 		// Use an is moving flag
 		// If not moving run astar and calculate the next position to move to
 		// If moving do nothing and let the coroutine finish
-		AStar ();
+
 	}
 
-	private Vector3Int? AStar () {
+	public float moveSpeed = 1f;
+	public float gridSize = 0.32f;
+	private Vector3 input;
+	private Vector3 startPosition;
+	private Vector3 endPosition;
+	private float t;
+	private float factor;
+
+	public IEnumerator move (Transform transform) {
+		isMoving = true;
+		startPosition = transform.position;
+		t = 0;
+		endPosition = new Vector3 (startPosition.x + System.Math.Sign (input.x) * gridSize,
+			startPosition.y + System.Math.Sign (input.y) * gridSize, startPosition.z);
+
+		factor = 1f;
+
+		while (t < 1f) {
+			t += Time.deltaTime * (moveSpeed / gridSize) * factor;
+			transform.position = Vector3.Lerp (startPosition, endPosition, t);
+			yield return null;
+		}
+
+		isMoving = false;
+		yield return 0;
+	}
+
+	private Node AStar () {
 		Queue<Node> openNodes = new Queue<Node> ();
 		List<Node> closedNodes = new List<Node> ();
 
-		Node startNode = new Node (null, bounds.WorldToCell (transform.position));
-		Node endNode = new Node (null, bounds.WorldToCell (player.position));
+		Node startNode = new Node (null, bounds.WorldToCell (transform.position), Vector3Int.zero);
+		Node endNode = new Node (null, bounds.WorldToCell (player.position), Vector3Int.zero);
 
 		openNodes.Enqueue (startNode);
 
@@ -70,7 +109,9 @@ public class Pathfinding : MonoBehaviour {
 					continue;
 				}
 
-				children.Add (new Node (currentNode, nodePos));
+				if (ValidTile (paths.GetTile (nodePos))) {
+					children.Add (new Node (currentNode, nodePos, newPos));
+				}
 			}
 
 			foreach (Node child in children) {
@@ -90,20 +131,28 @@ public class Pathfinding : MonoBehaviour {
 			}
 		}
 
-		Debug.Log ("No path found to get to player : " + itr);
 		return null;
 	}
 
-	private Vector3Int NextLocation (Node node) {
-		List<Vector3Int> path = new List<Vector3Int> ();
+	private Node NextLocation (Node node) {
+		List<Node> path = new List<Node> ();
 		Node current = node;
 
 		while (current != null) {
-			path.Add (current.position);
+			path.Add (current);
 			current = current.parent;
 		}
 
-		// We only need the last position to move to
-		return path[path.Count - 1];
+
+		if (path.Count >= 2) {
+			// We don't need the child pos and need the first actual next node
+			return path[path.Count - 2];
+		}
+		return null;
+	}
+
+	private bool ValidTile (TileBase tile) {
+		Debug.Log(tile);
+		return tile == clearTile;
 	}
 }
