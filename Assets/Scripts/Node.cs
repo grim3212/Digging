@@ -4,13 +4,15 @@ public class Node {
 
 	public Node parent;
 	public Vector3Int position;
+	public Vector3Int direction;
 	public int distanceFromStart = 0;
 	public int estimateToEnd = 0;
 	public int cost = 0;
 
-	public Node (Node parent, Vector3Int position) {
+	public Node (Node parent, Vector3Int position, Vector3Int direction) {
 		this.parent = parent;
 		this.position = position;
+		this.direction = direction;
 	}
 
 	public override bool Equals (object obj) {

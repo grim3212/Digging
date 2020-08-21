@@ -5,51 +5,78 @@ using UnityEngine.Tilemaps;
 
 public class Pathfinding : MonoBehaviour {
 
-	public Tilemap bounds;
-	public Tilemap paths;
+	public Grid grid;
+	public Tilemap map;
+	public Tile clearTile;
 	public Transform player;
-	private int gridWidth;
-	private int gridHeight;
-	private Vector3 min;
 	private Vector3 max;
+	private bool isMoving = false;
 
 	void Start () {
-		this.gridWidth = bounds.size.x;
-		// The extra one is to account for the top walkable area on the map
-		this.gridHeight = bounds.size.y + 1;
-
-		this.min = bounds.cellBounds.min;
-		this.max = bounds.cellBounds.max;
+		this.max = map.cellBounds.max + Vector3.up;
 	}
 
 	// Update is called once per frame
 	void Update () {
 
-		// Use an is moving flag
-		// If not moving run astar and calculate the next position to move to
-		// If moving do nothing and let the coroutine finish
-		AStar ();
+		if (!isMoving) {
+			Node nextLoc = AStar ();
+
+			if (nextLoc != null) {
+				input = nextLoc.direction;
+				StartCoroutine (move (transform));
+			} else {
+				NonTrackingMovement ();
+			}
+
+		}
 	}
 
-	private Vector3Int? AStar () {
+	public float moveSpeed = 1f;
+	public float gridSize = 0.32f;
+	private Vector3 input;
+	private Vector3 startPosition;
+	private Vector3 endPosition;
+	private float t;
+	private float factor;
+
+	public IEnumerator move (Transform transform) {
+		isMoving = true;
+		startPosition = transform.position;
+		t = 0;
+		endPosition = new Vector3 (startPosition.x + System.Math.Sign (input.x) * gridSize,
+			startPosition.y + System.Math.Sign (input.y) * gridSize, startPosition.z);
+
+		factor = 1f;
+
+		while (t < 1f) {
+			t += Time.deltaTime * (moveSpeed / gridSize) * factor;
+			transform.position = Vector3.Lerp (startPosition, endPosition, t);
+			yield return null;
+		}
+
+		isMoving = false;
+		yield return 0;
+	}
+
+	private Node AStar () {
 		Queue<Node> openNodes = new Queue<Node> ();
 		List<Node> closedNodes = new List<Node> ();
 
-		Node startNode = new Node (null, bounds.WorldToCell (transform.position));
-		Node endNode = new Node (null, bounds.WorldToCell (player.position));
+		Node startNode = new Node (null, map.WorldToCell (transform.position), Vector3Int.zero);
+		Node endNode = new Node (null, map.WorldToCell (player.position), Vector3Int.zero);
 
 		openNodes.Enqueue (startNode);
 
 		int itr = 0;
-		int maxItr = Mathf.FloorToInt ((gridWidth * gridHeight) / 2);
 
 		Vector3Int[] adjacent = { Vector3Int.down, Vector3Int.up, Vector3Int.left, Vector3Int.right };
 
 		while (openNodes.Count > 0) {
 			itr++;
 
-			if (itr >= maxItr) {
-				Debug.Log ("Maximum iterations reached during pathfinding");
+			if (itr >= 1000) {
+				Debug.Log ("Maximum iterations of [1000] reached during pathfinding");
 				break;
 			}
 
@@ -62,15 +89,24 @@ public class Pathfinding : MonoBehaviour {
 
 
 			List<Node> children = new List<Node> ();
-			foreach (Vector3Int newPos in adjacent) {
-				Vector3Int nodePos = currentNode.position + newPos;
+			foreach (Vector3Int direction in adjacent) {
+				Vector3Int nodePos = currentNode.position + direction;
 
-				// Need to adjust this check to make sure that we are only looking in the correct bounds
-				if (nodePos.x > this.max.x || nodePos.x < this.min.x || nodePos.y > this.max.y || nodePos.y < this.min.y) {
+				if (nodePos.x > this.max.x || nodePos.y > this.max.y) {
 					continue;
 				}
 
-				children.Add (new Node (currentNode, nodePos));
+				if (ValidTile (map.GetTile (nodePos))) {
+					// Is it possible to raycast here as well to check if there is a collision
+					// What happens if a tilemap is setup wrong or for some other reason we need
+					// to make sure that it is not a collision
+					children.Add (new Node (currentNode, nodePos, direction));
+				}
+				else {
+					if (nodePos.y + 1 == this.max.y) {
+						children.Add (new Node (currentNode, nodePos, direction));
+					}
+				}
 			}
 
 			foreach (Node child in children) {
@@ -90,20 +126,141 @@ public class Pathfinding : MonoBehaviour {
 			}
 		}
 
-		Debug.Log ("No path found to get to player : " + itr);
 		return null;
 	}
 
-	private Vector3Int NextLocation (Node node) {
-		List<Vector3Int> path = new List<Vector3Int> ();
+	private Node NextLocation (Node node) {
+		List<Node> path = new List<Node> ();
 		Node current = node;
 
 		while (current != null) {
-			path.Add (current.position);
+			path.Add (current);
 			current = current.parent;
 		}
 
-		// We only need the last position to move to
-		return path[path.Count - 1];
+
+		if (path.Count >= 2) {
+			// We don't need the child pos and need the first actual next node
+			return path[path.Count - 2];
+		}
+		return null;
+	}
+
+	private bool ValidTile (TileBase tile) {
+		return tile == clearTile;
+	}
+
+	private Vector3Int previousDirection;
+
+	private void NonTrackingMovement () {
+		Vector3Int coordinate = grid.WorldToCell (transform.position);
+		if (previousDirection != Vector3Int.zero && ValidTile (map.GetTile (coordinate + previousDirection))) {
+			input = new Vector2 (previousDirection.x, previousDirection.y);
+		}
+		else if (previousDirection == Vector3Int.up) {
+			if (ValidTile (map.GetTile (coordinate + Vector3Int.right))) {
+				input = Vector2.right;
+				previousDirection = Vector3Int.right;
+			}
+			else if (ValidTile (map.GetTile (coordinate + Vector3Int.left))) {
+				input = Vector2.left;
+				previousDirection = Vector3Int.left;
+			}
+			else if (ValidTile (map.GetTile (coordinate + Vector3Int.down))) {
+				input = Vector2.down;
+				previousDirection = Vector3Int.down;
+			}
+			else {
+				input = Vector2.zero;
+				previousDirection = Vector3Int.zero;
+			}
+		}
+		else if (previousDirection == Vector3Int.right) {
+			if (ValidTile (map.GetTile (coordinate + Vector3Int.up))) {
+				input = Vector2.up;
+				previousDirection = Vector3Int.up;
+			}
+			else if (ValidTile (map.GetTile (coordinate + Vector3Int.down))) {
+				input = Vector2.down;
+				previousDirection = Vector3Int.down;
+			}
+			else if (ValidTile (map.GetTile (coordinate + Vector3Int.left))) {
+				input = Vector2.left;
+				previousDirection = Vector3Int.left;
+			}
+			else {
+				input = Vector2.zero;
+				previousDirection = Vector3Int.zero;
+			}
+		}
+		else if (previousDirection == Vector3Int.left) {
+			if (ValidTile (map.GetTile (coordinate + Vector3Int.up))) {
+				input = Vector2.up;
+				previousDirection = Vector3Int.up;
+			}
+			else if (ValidTile (map.GetTile (coordinate + Vector3Int.down))) {
+				input = Vector2.down;
+				previousDirection = Vector3Int.down;
+			}
+
+			else if (ValidTile (map.GetTile (coordinate + Vector3Int.right))) {
+				input = Vector2.right;
+				previousDirection = Vector3Int.right;
+			}
+			else {
+				input = Vector2.zero;
+				previousDirection = Vector3Int.zero;
+			}
+		}
+		else if (previousDirection == Vector3Int.down) {
+			if (ValidTile (map.GetTile (coordinate + Vector3Int.left))) {
+				input = Vector2.left;
+				previousDirection = Vector3Int.left;
+			}
+			else if (ValidTile (map.GetTile (coordinate + Vector3Int.right))) {
+				input = Vector2.right;
+				previousDirection = Vector3Int.right;
+			}
+			else if (ValidTile (map.GetTile (coordinate + Vector3Int.up))) {
+				input = Vector2.up;
+				previousDirection = Vector3Int.up;
+			}
+			else {
+				input = Vector2.zero;
+				previousDirection = Vector3Int.zero;
+			}
+		}
+		else if (ValidTile (map.GetTile (coordinate + Vector3Int.up))) {
+			input = Vector2.up;
+			previousDirection = Vector3Int.up;
+		}
+		else if (ValidTile (map.GetTile (coordinate + Vector3Int.left))) {
+			input = Vector2.left;
+			previousDirection = Vector3Int.left;
+		}
+		else if (ValidTile (map.GetTile (coordinate + Vector3Int.down))) {
+			input = Vector2.down;
+			previousDirection = Vector3Int.down;
+		}
+		else if (ValidTile (map.GetTile (coordinate + Vector3Int.right))) {
+			input = Vector2.right;
+			previousDirection = Vector3Int.right;
+		}
+		else {
+			input = Vector2.zero;
+			previousDirection = Vector3Int.zero;
+		}
+
+		if (input != Vector3.zero) {
+			if (!(input == Vector3.up && (transform.position.y + 0.32f) >= this.max.y)) {
+				RaycastHit2D hit = Physics2D.Raycast (transform.position, input, 0.32f);
+				if (hit.collider == null) {
+					StartCoroutine (move (transform));
+				}
+				else {
+					previousDirection = Vector3Int.zero;
+				}
+			}
+		}
 	}
 }
