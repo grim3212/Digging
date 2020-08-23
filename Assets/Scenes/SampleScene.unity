@@ -271,6 +271,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tilemap
       objectReference: {fileID: 0}
+    - target: {fileID: 7969198744854587229, guid: e2e92921554986c41b158801c1ba86c9, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e2e92921554986c41b158801c1ba86c9, type: 3}
 --- !u!1 &685002191 stripped
@@ -292,6 +296,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grid: {fileID: 1942197344}
   map: {fileID: 1829085760}
+  colliders: {fileID: 2013383416}
   clearTile: {fileID: 11400000, guid: 749e1e4176d2ff049a181e4f9a13653f, type: 2}
   player: {fileID: 752278361}
   moveSpeed: 1
@@ -332,6 +337,7 @@ MonoBehaviour:
   gridSize: 0.32
   grid: {fileID: 1942197344}
   map: {fileID: 1829085760}
+  colliders: {fileID: 2013383416}
   clearTile: {fileID: 11400000, guid: 749e1e4176d2ff049a181e4f9a13653f, type: 2}
 --- !u!212 &752278360
 SpriteRenderer:
@@ -464,6 +470,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grid: {fileID: 1942197344}
   map: {fileID: 1829085760}
+  colliders: {fileID: 2013383416}
   clearTile: {fileID: 11400000, guid: 749e1e4176d2ff049a181e4f9a13653f, type: 2}
   player: {fileID: 752278361}
   moveSpeed: 1
@@ -487,6 +494,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grid: {fileID: 1942197344}
   map: {fileID: 1829085760}
+  colliders: {fileID: 2013383416}
   clearTile: {fileID: 11400000, guid: 749e1e4176d2ff049a181e4f9a13653f, type: 2}
   player: {fileID: 752278361}
   moveSpeed: 1
@@ -795,6 +803,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grid: {fileID: 1942197344}
   map: {fileID: 1829085760}
+  colliders: {fileID: 2013383416}
   clearTile: {fileID: 11400000, guid: 749e1e4176d2ff049a181e4f9a13653f, type: 2}
   player: {fileID: 752278361}
   moveSpeed: 1
@@ -807,6 +816,11 @@ Tilemap:
 --- !u!156049354 &1942197344 stripped
 Grid:
   m_CorrespondingSourceObject: {fileID: 4463489097742179025, guid: e2e92921554986c41b158801c1ba86c9, type: 3}
+  m_PrefabInstance: {fileID: 449246416}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1839735485 &2013383416 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 7128737406192600062, guid: e2e92921554986c41b158801c1ba86c9, type: 3}
   m_PrefabInstance: {fileID: 449246416}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7108556082084195005
