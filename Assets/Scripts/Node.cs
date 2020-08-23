@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Node {
+public class Node : System.IComparable<Node> {
 
 	public Node parent;
 	public Vector3Int position;
@@ -37,6 +37,10 @@ public class Node {
 
 	public override int GetHashCode () {
 		return base.GetHashCode ();
+	}
+
+	public int CompareTo (Node node) {
+		return this.cost.CompareTo (node.cost);
 	}
 
 	public static bool operator == (Node left, Node right) {

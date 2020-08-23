@@ -7,9 +7,10 @@ class Player : MonoBehaviour {
 	public float gridSize = 0.32f;
 	public Grid grid;
 	public Tilemap map;
+	public Tilemap colliders;
 	public Tile clearTile;
 
-	private Vector2 input;
+	private Vector3 input;
 	private bool isMoving = false;
 	private Vector3 startPosition;
 	private Vector3 endPosition;
@@ -23,7 +24,7 @@ class Player : MonoBehaviour {
 
 	public void Update () {
 		if (!isMoving) {
-			input = new Vector2 (Input.GetAxisRaw ("Horizontal"), Input.GetAxisRaw ("Vertical"));
+			input = new Vector3 (Input.GetAxisRaw ("Horizontal"), Input.GetAxisRaw ("Vertical"));
 			if (Mathf.Abs (input.x) > Mathf.Abs (input.y)) {
 				input.y = 0;
 			}
@@ -31,10 +32,9 @@ class Player : MonoBehaviour {
 				input.x = 0;
 			}
 
-			if (input != Vector2.zero) {
-				if (!(input == Vector2.up && (transform.position.y + 0.32f) >= maxY)) {
-					RaycastHit2D hit = Physics2D.Raycast (transform.position, input, 0.32f);
-					if (hit.collider == null) {
+			if (input != Vector3.zero) {
+				if (!(input == Vector3.up && (transform.position.y + 0.32f) >= maxY)) {
+					if (ValidTile(grid.WorldToCell(transform.position + input * 0.32f))) {
 						StartCoroutine (move (transform));
 					}
 				}
@@ -65,5 +65,9 @@ class Player : MonoBehaviour {
 
 		isMoving = false;
 		yield return 0;
+	}
+
+	private bool ValidTile (Vector3Int tilePosInCells) {
+		return colliders.GetTile (tilePosInCells) == null;
 	}
 }

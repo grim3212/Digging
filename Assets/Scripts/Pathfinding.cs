@@ -7,6 +7,7 @@ public class Pathfinding : MonoBehaviour {
 
 	public Grid grid;
 	public Tilemap map;
+	public Tilemap colliders;
 	public Tile clearTile;
 	public Transform player;
 	private Vector3 max;
@@ -25,7 +26,8 @@ public class Pathfinding : MonoBehaviour {
 			if (nextLoc != null) {
 				input = nextLoc.direction;
 				StartCoroutine (move (transform));
-			} else {
+			}
+			else {
 				NonTrackingMovement ();
 			}
 
@@ -96,10 +98,7 @@ public class Pathfinding : MonoBehaviour {
 					continue;
 				}
 
-				if (ValidTile (map.GetTile (nodePos))) {
-					// Is it possible to raycast here as well to check if there is a collision
-					// What happens if a tilemap is setup wrong or for some other reason we need
-					// to make sure that it is not a collision
+				if (ValidTile (nodePos)) {
 					children.Add (new Node (currentNode, nodePos, direction));
 				}
 				else {
@@ -132,10 +131,17 @@ public class Pathfinding : MonoBehaviour {
 	private Node NextLocation (Node node) {
 		List<Node> path = new List<Node> ();
 		Node current = node;
+		Vector3 offset = new Vector3 (0.16f, 0.16f, 0f);
 
 		while (current != null) {
+			Vector3 previous = map.CellToWorld (current.position);
 			path.Add (current);
 			current = current.parent;
+
+			if (current != null) {
+
+				Debug.DrawLine (previous + offset, map.CellToWorld (current.position) + offset, Color.green, 0.75f, false);
+			}
 		}
 
 
@@ -146,27 +152,27 @@ public class Pathfinding : MonoBehaviour {
 		return null;
 	}
 
-	private bool ValidTile (TileBase tile) {
-		return tile == clearTile;
+	private bool ValidTile (Vector3Int tilePosInCells) {
+		return map.GetTile (tilePosInCells) == clearTile && colliders.GetTile (tilePosInCells) == null;
 	}
 
 	private Vector3Int previousDirection;
 
 	private void NonTrackingMovement () {
 		Vector3Int coordinate = grid.WorldToCell (transform.position);
-		if (previousDirection != Vector3Int.zero && ValidTile (map.GetTile (coordinate + previousDirection))) {
+		if (previousDirection != Vector3Int.zero && ValidTile (coordinate + previousDirection)) {
 			input = new Vector2 (previousDirection.x, previousDirection.y);
 		}
 		else if (previousDirection == Vector3Int.up) {
-			if (ValidTile (map.GetTile (coordinate + Vector3Int.right))) {
+			if (ValidTile (coordinate + Vector3Int.right)) {
 				input = Vector2.right;
 				previousDirection = Vector3Int.right;
 			}
-			else if (ValidTile (map.GetTile (coordinate + Vector3Int.left))) {
+			else if (ValidTile (coordinate + Vector3Int.left)) {
 				input = Vector2.left;
 				previousDirection = Vector3Int.left;
 			}
-			else if (ValidTile (map.GetTile (coordinate + Vector3Int.down))) {
+			else if (ValidTile (coordinate + Vector3Int.down)) {
 				input = Vector2.down;
 				previousDirection = Vector3Int.down;
 			}
@@ -176,15 +182,15 @@ public class Pathfinding : MonoBehaviour {
 			}
 		}
 		else if (previousDirection == Vector3Int.right) {
-			if (ValidTile (map.GetTile (coordinate + Vector3Int.up))) {
+			if (ValidTile (coordinate + Vector3Int.up)) {
 				input = Vector2.up;
 				previousDirection = Vector3Int.up;
 			}
-			else if (ValidTile (map.GetTile (coordinate + Vector3Int.down))) {
+			else if (ValidTile (coordinate + Vector3Int.down)) {
 				input = Vector2.down;
 				previousDirection = Vector3Int.down;
 			}
-			else if (ValidTile (map.GetTile (coordinate + Vector3Int.left))) {
+			else if (ValidTile (coordinate + Vector3Int.left)) {
 				input = Vector2.left;
 				previousDirection = Vector3Int.left;
 			}
@@ -194,16 +200,16 @@ public class Pathfinding : MonoBehaviour {
 			}
 		}
 		else if (previousDirection == Vector3Int.left) {
-			if (ValidTile (map.GetTile (coordinate + Vector3Int.up))) {
+			if (ValidTile (coordinate + Vector3Int.up)) {
 				input = Vector2.up;
 				previousDirection = Vector3Int.up;
 			}
-			else if (ValidTile (map.GetTile (coordinate + Vector3Int.down))) {
+			else if (ValidTile (coordinate + Vector3Int.down)) {
 				input = Vector2.down;
 				previousDirection = Vector3Int.down;
 			}
 
-			else if (ValidTile (map.GetTile (coordinate + Vector3Int.right))) {
+			else if (ValidTile (coordinate + Vector3Int.right)) {
 				input = Vector2.right;
 				previousDirection = Vector3Int.right;
 			}
@@ -213,15 +219,15 @@ public class Pathfinding : MonoBehaviour {
 			}
 		}
 		else if (previousDirection == Vector3Int.down) {
-			if (ValidTile (map.GetTile (coordinate + Vector3Int.left))) {
+			if (ValidTile (coordinate + Vector3Int.left)) {
 				input = Vector2.left;
 				previousDirection = Vector3Int.left;
 			}
-			else if (ValidTile (map.GetTile (coordinate + Vector3Int.right))) {
+			else if (ValidTile (coordinate + Vector3Int.right)) {
 				input = Vector2.right;
 				previousDirection = Vector3Int.right;
 			}
-			else if (ValidTile (map.GetTile (coordinate + Vector3Int.up))) {
+			else if (ValidTile (coordinate + Vector3Int.up)) {
 				input = Vector2.up;
 				previousDirection = Vector3Int.up;
 			}
@@ -230,19 +236,19 @@ public class Pathfinding : MonoBehaviour {
 				previousDirection = Vector3Int.zero;
 			}
 		}
-		else if (ValidTile (map.GetTile (coordinate + Vector3Int.up))) {
+		else if (ValidTile (coordinate + Vector3Int.up)) {
 			input = Vector2.up;
 			previousDirection = Vector3Int.up;
 		}
-		else if (ValidTile (map.GetTile (coordinate + Vector3Int.left))) {
+		else if (ValidTile (coordinate + Vector3Int.left)) {
 			input = Vector2.left;
 			previousDirection = Vector3Int.left;
 		}
-		else if (ValidTile (map.GetTile (coordinate + Vector3Int.down))) {
+		else if (ValidTile (coordinate + Vector3Int.down)) {
 			input = Vector2.down;
 			previousDirection = Vector3Int.down;
 		}
-		else if (ValidTile (map.GetTile (coordinate + Vector3Int.right))) {
+		else if (ValidTile (coordinate + Vector3Int.right)) {
 			input = Vector2.right;
 			previousDirection = Vector3Int.right;
 		}
@@ -253,13 +259,7 @@ public class Pathfinding : MonoBehaviour {
 
 		if (input != Vector3.zero) {
 			if (!(input == Vector3.up && (transform.position.y + 0.32f) >= this.max.y)) {
-				RaycastHit2D hit = Physics2D.Raycast (transform.position, input, 0.32f);
-				if (hit.collider == null) {
-					StartCoroutine (move (transform));
-				}
-				else {
-					previousDirection = Vector3Int.zero;
-				}
+				StartCoroutine (move (transform));
 			}
 		}
 	}
