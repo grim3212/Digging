@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: DarkerBackgroundTile
+  m_Name: background 1
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: 21300000, guid: bcc56aa185f6d384aac8b5389c3f1bc0, type: 3}
-  m_Color: {r: 0.6509434, g: 0.6509434, b: 0.6509434, a: 1}
+  m_Sprite: {fileID: -3926240249598003598, guid: f58cbf598de422f47b2552d1e032dc8c, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1
     e01: 0

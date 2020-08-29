@@ -34,8 +34,8 @@ public class Pathfinding : MonoBehaviour {
 		}
 	}
 
-	public float moveSpeed = 1f;
-	public float gridSize = 0.32f;
+	public float moveSpeed = 2f;
+	public float gridSize = 1f;
 	private Vector3 input;
 	private Vector3 startPosition;
 	private Vector3 endPosition;
@@ -131,7 +131,7 @@ public class Pathfinding : MonoBehaviour {
 	private Node NextLocation (Node node) {
 		List<Node> path = new List<Node> ();
 		Node current = node;
-		Vector3 offset = new Vector3 (0.16f, 0.16f, 0f);
+		Vector3 offset = new Vector3 (0.5f, 0.5f, 0f);
 
 		while (current != null) {
 			Vector3 previous = map.CellToWorld (current.position);
@@ -258,9 +258,7 @@ public class Pathfinding : MonoBehaviour {
 		}
 
 		if (input != Vector3.zero) {
-			if (!(input == Vector3.up && (transform.position.y + 0.32f) >= this.max.y)) {
-				StartCoroutine (move (transform));
-			}
+			StartCoroutine (move (transform));
 		}
 	}
 }

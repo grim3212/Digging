@@ -2,9 +2,9 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-class Player : MonoBehaviour {
+public class Player : MonoBehaviour {
 	public float moveSpeed = 1f;
-	public float gridSize = 0.32f;
+	public float gridSize = 1f;
 	public Grid grid;
 	public Tilemap map;
 	public Tilemap colliders;
@@ -16,11 +16,8 @@ class Player : MonoBehaviour {
 	private Vector3 endPosition;
 	private float t;
 	private float factor;
-	private float maxY;
 
-	public void Start () {
-		maxY = grid.CellToLocal (map.cellBounds.max).y + 0.32f;
-	}
+	public GameObject projectile;
 
 	public void Update () {
 		if (!isMoving) {
@@ -33,12 +30,15 @@ class Player : MonoBehaviour {
 			}
 
 			if (input != Vector3.zero) {
-				if (!(input == Vector3.up && (transform.position.y + 0.32f) >= maxY)) {
-					if (ValidTile(grid.WorldToCell(transform.position + input * 0.32f))) {
-						StartCoroutine (move (transform));
-					}
+				if (ValidTile (grid.WorldToCell (transform.position + input))) {
+					StartCoroutine (move (transform));
 				}
 			}
+		}
+
+		//Detect when mouse is clicked
+		if (Input.GetMouseButtonDown (0)) {
+			Instantiate (this.projectile, transform.position, transform.rotation);
 		}
 	}
 
