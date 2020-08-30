@@ -5,16 +5,12 @@ using UnityEngine.Tilemaps;
 
 public class Pathfinding : MonoBehaviour {
 
-	public Grid grid;
-	public Tilemap map;
-	public Tilemap colliders;
-	public Tile clearTile;
 	public Transform player;
 	private Vector3 max;
 	private bool isMoving = false;
 
 	void Start () {
-		this.max = map.cellBounds.max + Vector3.up;
+		this.max = World.Instance.Map.cellBounds.max + Vector3.up;
 	}
 
 	// Update is called once per frame
@@ -65,8 +61,8 @@ public class Pathfinding : MonoBehaviour {
 		Queue<Node> openNodes = new Queue<Node> ();
 		List<Node> closedNodes = new List<Node> ();
 
-		Node startNode = new Node (null, map.WorldToCell (transform.position), Vector3Int.zero);
-		Node endNode = new Node (null, map.WorldToCell (player.position), Vector3Int.zero);
+		Node startNode = new Node (null, World.Instance.Map.WorldToCell (transform.position), Vector3Int.zero);
+		Node endNode = new Node (null, World.Instance.Map.WorldToCell (player.position), Vector3Int.zero);
 
 		openNodes.Enqueue (startNode);
 
@@ -134,13 +130,13 @@ public class Pathfinding : MonoBehaviour {
 		Vector3 offset = new Vector3 (0.5f, 0.5f, 0f);
 
 		while (current != null) {
-			Vector3 previous = map.CellToWorld (current.position);
+			Vector3 previous = World.Instance.Map.CellToWorld (current.position);
 			path.Add (current);
 			current = current.parent;
 
 			if (current != null) {
 
-				Debug.DrawLine (previous + offset, map.CellToWorld (current.position) + offset, Color.green, 0.75f, false);
+				Debug.DrawLine (previous + offset, World.Instance.Map.CellToWorld (current.position) + offset, Color.green, 0.75f, false);
 			}
 		}
 
@@ -153,13 +149,13 @@ public class Pathfinding : MonoBehaviour {
 	}
 
 	private bool ValidTile (Vector3Int tilePosInCells) {
-		return map.GetTile (tilePosInCells) == clearTile && colliders.GetTile (tilePosInCells) == null;
+		return World.Instance.Map.GetTile (tilePosInCells) == World.Instance.ClearTile && World.Instance.Colliders.GetTile (tilePosInCells) == null;
 	}
 
 	private Vector3Int previousDirection;
 
 	private void NonTrackingMovement () {
-		Vector3Int coordinate = grid.WorldToCell (transform.position);
+		Vector3Int coordinate = World.Instance.Grid.WorldToCell (transform.position);
 		if (previousDirection != Vector3Int.zero && ValidTile (coordinate + previousDirection)) {
 			input = new Vector2 (previousDirection.x, previousDirection.y);
 		}

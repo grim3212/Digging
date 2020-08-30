@@ -4,11 +4,6 @@ using UnityEngine.Tilemaps;
 
 public class Player : MonoBehaviour {
 	public float moveSpeed = 1f;
-	public float gridSize = 1f;
-	public Grid grid;
-	public Tilemap map;
-	public Tilemap colliders;
-	public Tile clearTile;
 
 	private Vector3 input;
 	private bool isMoving = false;
@@ -30,7 +25,7 @@ public class Player : MonoBehaviour {
 			}
 
 			if (input != Vector3.zero) {
-				if (ValidTile (grid.WorldToCell (transform.position + input))) {
+				if (ValidTile (World.Instance.Grid.WorldToCell (transform.position + input))) {
 					StartCoroutine (move (transform));
 				}
 			}
@@ -43,21 +38,22 @@ public class Player : MonoBehaviour {
 	}
 
 	public IEnumerator move (Transform transform) {
+
 		isMoving = true;
 		startPosition = transform.position;
 		t = 0;
-		endPosition = new Vector3 (startPosition.x + System.Math.Sign (input.x) * gridSize,
-			startPosition.y + System.Math.Sign (input.y) * gridSize, startPosition.z);
+		endPosition = new Vector3 (startPosition.x + System.Math.Sign (input.x) * World.Instance.GridSize,
+			startPosition.y + System.Math.Sign (input.y) * World.Instance.GridSize, startPosition.z);
 
 		factor = 1f;
 
 		while (t < 1f) {
-			t += Time.deltaTime * (moveSpeed / gridSize) * factor;
+			t += Time.deltaTime * (moveSpeed / World.Instance.GridSize) * factor;
 			transform.position = Vector3.Lerp (startPosition, endPosition, t);
-			Vector3Int coordinate = grid.WorldToCell (transform.position);
-			TileBase tile = map.GetTile (coordinate);
-			if (tile != null && tile != clearTile) {
-				map.SetTile (coordinate, clearTile);
+			Vector3Int coordinate = World.Instance.Grid.WorldToCell (transform.position);
+			TileBase tile = World.Instance.Map.GetTile (coordinate);
+			if (tile != null && tile != World.Instance.ClearTile) {
+				World.Instance.Map.SetTile (coordinate, World.Instance.ClearTile);
 			}
 
 			yield return null;
@@ -68,6 +64,7 @@ public class Player : MonoBehaviour {
 	}
 
 	private bool ValidTile (Vector3Int tilePosInCells) {
-		return colliders.GetTile (tilePosInCells) == null;
+		return World.Instance.Colliders.GetTile (tilePosInCells) == null;
 	}
+	
 }
