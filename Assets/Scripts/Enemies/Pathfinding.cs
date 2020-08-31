@@ -8,6 +8,12 @@ public class Pathfinding : MonoBehaviour {
 	public Transform player;
 	private Vector3 max;
 	private bool isMoving = false;
+	private Vector3 spawnPos;
+	private IEnumerator coroutine;
+
+	void Awake () {
+		this.spawnPos = transform.position;
+	}
 
 	void Start () {
 		this.max = World.Instance.Map.cellBounds.max + Vector3.up;
@@ -15,19 +21,27 @@ public class Pathfinding : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+		if (!World.Instance.CanUpdate) return;
 
 		if (!isMoving) {
 			Node nextLoc = AStar ();
 
 			if (nextLoc != null) {
 				input = nextLoc.direction;
-				StartCoroutine (move (transform));
+				this.coroutine = move (transform);
+				StartCoroutine (this.coroutine);
 			}
 			else {
 				NonTrackingMovement ();
 			}
 
 		}
+	}
+
+	public void Reset () {
+		StopCoroutine(this.coroutine);
+		this.isMoving = false;
+		this.transform.position = this.spawnPos;
 	}
 
 	public float moveSpeed = 2f;
@@ -254,7 +268,8 @@ public class Pathfinding : MonoBehaviour {
 		}
 
 		if (input != Vector3.zero) {
-			StartCoroutine (move (transform));
+			this.coroutine = move (transform);
+			StartCoroutine (this.coroutine);
 		}
 	}
 }

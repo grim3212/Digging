@@ -45,7 +45,7 @@ public class Projectile : MonoBehaviour {
 
 	private bool hasCollided = false;
 	void OnTriggerEnter2D (Collider2D col) {
-		if(col.name == "Player") { return; }
+		if (col.name == "Player") { return; }
 		if (this.hasCollided == true) { return; }
 
 		this.hasCollided = true;
@@ -53,7 +53,8 @@ public class Projectile : MonoBehaviour {
 		if (col.tag == "Enemy") {
 			Destroy (col.gameObject);
 			Destroy (this.gameObject);
-			Instantiate(World.Instance.BloodParticles, col.gameObject.transform.position, col.gameObject.transform.rotation);
+			Instantiate (World.Instance.BloodParticles, col.gameObject.transform.position, col.gameObject.transform.rotation);
+			World.Instance.gameManager.score += 100;
 		}
 	}
 	void LateUpdate () {
@@ -63,4 +64,5 @@ public class Projectile : MonoBehaviour {
 	private bool ValidTile (Vector3Int tilePosInCells) {
 		return World.Instance.Map.GetTile (tilePosInCells) == World.Instance.ClearTile && World.Instance.Colliders.GetTile (tilePosInCells) == null;
 	}
+
 }

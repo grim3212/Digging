@@ -35,6 +35,10 @@ public class Player : MonoBehaviour {
 		if (Input.GetMouseButtonDown (0)) {
 			Instantiate (this.projectile, transform.position, transform.rotation);
 		}
+
+		if (Input.GetKeyUp (KeyCode.P)) {
+			World.Instance.ResetLevel ();
+		}
 	}
 
 	public IEnumerator move (Transform transform) {
@@ -66,5 +70,4 @@ public class Player : MonoBehaviour {
 	private bool ValidTile (Vector3Int tilePosInCells) {
 		return World.Instance.Colliders.GetTile (tilePosInCells) == null;
 	}
-	
 }
