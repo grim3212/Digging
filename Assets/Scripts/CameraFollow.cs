@@ -21,13 +21,13 @@ public class CameraFollow : MonoBehaviour {
 		
 		mainCam = GetComponent<Camera> ();
 		camOrthsize = mainCam.orthographicSize;
-		cameraRatio = (worldMax.x + camOrthsize) / 2.0f;
+		cameraRatio = mainCam.aspect * camOrthsize;
 	}
 
 	void LateUpdate () {
-		//camY = Mathf.Clamp (this.player.position.y, worldMin.y + camOrthsize, worldMax.y - camOrthsize);
+		camY = Mathf.Clamp (this.player.position.y, worldMin.y + camOrthsize, worldMax.y - camOrthsize);
 		camX = Mathf.Clamp (this.player.position.x, worldMin.x + cameraRatio, worldMax.x - cameraRatio);
-        smoothPos = Vector3.Lerp(this.transform.position, new Vector3(camX, this.player.position.y, this.transform.position.z), smoothSpeed);
+        smoothPos = Vector3.Lerp(this.transform.position, new Vector3(camX, camY, this.transform.position.z), smoothSpeed);
 		this.transform.position = smoothPos;
 	}
 }
