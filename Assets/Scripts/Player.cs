@@ -11,10 +11,16 @@ public class Player : MonoBehaviour {
 	private Vector3 endPosition;
 	private float t;
 	private float factor;
+	private Vector3 spawn;
+	private IEnumerator coroutine;
 
 	public GameObject projectile;
 
-	public void Update () {
+	void Awake () {
+		this.spawn = this.transform.position;
+	}
+
+	void Update () {
 		if (!isMoving) {
 			input = new Vector3 (Input.GetAxisRaw ("Horizontal"), Input.GetAxisRaw ("Vertical"));
 			if (Mathf.Abs (input.x) > Mathf.Abs (input.y)) {
@@ -26,7 +32,8 @@ public class Player : MonoBehaviour {
 
 			if (input != Vector3.zero) {
 				if (ValidTile (World.Instance.Grid.WorldToCell (transform.position + input))) {
-					StartCoroutine (move (transform));
+					this.coroutine = move (transform);
+					StartCoroutine (this.coroutine);
 				}
 			}
 		}
@@ -42,7 +49,6 @@ public class Player : MonoBehaviour {
 	}
 
 	public IEnumerator move (Transform transform) {
-
 		isMoving = true;
 		startPosition = transform.position;
 		t = 0;
@@ -69,5 +75,19 @@ public class Player : MonoBehaviour {
 
 	private bool ValidTile (Vector3Int tilePosInCells) {
 		return World.Instance.Colliders.GetTile (tilePosInCells) == null;
+	}
+
+	public void Reset () {
+		StopCoroutine (this.coroutine);
+		this.isMoving = false;
+		this.transform.position = this.spawn;
+	}
+
+	void OnTriggerEnter2D (Collider2D col) {
+		if (col.tag == "Enemy") {
+			Instantiate (World.Instance.BloodParticles, col.gameObject.transform.position, col.gameObject.transform.rotation);
+			World.Instance.gameManager.lives -= 1;
+			World.Instance.ResetLevel ();
+		}
 	}
 }

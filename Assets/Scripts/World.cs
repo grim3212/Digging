@@ -22,7 +22,6 @@ public class World : MonoBehaviour {
 	public bool CanUpdate = true;
 
 	public GameObject player;
-	private Vector3 spawn;
 	private TileBase[] allTiles;
 
 	private void Awake () {
@@ -35,8 +34,6 @@ public class World : MonoBehaviour {
 
 		appPath = Application.persistentDataPath;
 		gameManager = new GameManager ();
-
-		this.spawn = player.transform.position;
 
 		this.allTiles = Map.GetTilesBlock (Map.cellBounds);
 	}
@@ -54,7 +51,7 @@ public class World : MonoBehaviour {
 	}
 
 	public void ResetLevel () {
-		this.player.transform.position = this.spawn;
+		this.player.GetComponent<Player> ().Reset ();
 		EnemyManager.Instance.Reset ();
 		Map.SetTilesBlock (Map.cellBounds, this.allTiles);
 	}
