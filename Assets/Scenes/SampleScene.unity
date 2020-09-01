@@ -1060,7 +1060,7 @@ Camera:
   m_GameObject: {fileID: 1266540650}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 2
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -1139,6 +1139,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7565780644379575891, guid: cfa265d0cada88245a1bfaa9bcd322a8, type: 3}
+      propertyPath: m_CellSize.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7565780644379575891, guid: cfa265d0cada88245a1bfaa9bcd322a8, type: 3}
+      propertyPath: m_CellSize.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7565780644379575891, guid: cfa265d0cada88245a1bfaa9bcd322a8, type: 3}
+      propertyPath: m_CellGap.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7565780644379575891, guid: cfa265d0cada88245a1bfaa9bcd322a8, type: 3}
+      propertyPath: m_CellGap.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7565780644572043764, guid: cfa265d0cada88245a1bfaa9bcd322a8, type: 3}
       propertyPath: m_Name
       value: Level1
@@ -1191,6 +1207,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7565780645008675636, guid: cfa265d0cada88245a1bfaa9bcd322a8, type: 3}
+      propertyPath: m_ChunkCullingBounds.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7565780645008675636, guid: cfa265d0cada88245a1bfaa9bcd322a8, type: 3}
+      propertyPath: m_ChunkCullingBounds.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7565780645008675638, guid: cfa265d0cada88245a1bfaa9bcd322a8, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -1198,6 +1222,14 @@ PrefabInstance:
     - target: {fileID: 7565780645432272480, guid: cfa265d0cada88245a1bfaa9bcd322a8, type: 3}
       propertyPath: m_Layer
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7565780645432272487, guid: cfa265d0cada88245a1bfaa9bcd322a8, type: 3}
+      propertyPath: m_ChunkCullingBounds.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7565780645432272487, guid: cfa265d0cada88245a1bfaa9bcd322a8, type: 3}
+      propertyPath: m_ChunkCullingBounds.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cfa265d0cada88245a1bfaa9bcd322a8, type: 3}

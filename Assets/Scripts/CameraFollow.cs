@@ -24,7 +24,7 @@ public class CameraFollow : MonoBehaviour {
 		cameraRatio = mainCam.aspect * camOrthsize;
 	}
 
-	void LateUpdate () {
+	void FixedUpdate () {
 		camY = Mathf.Clamp (this.player.position.y, worldMin.y + camOrthsize, worldMax.y - camOrthsize);
 		camX = Mathf.Clamp (this.player.position.x, worldMin.x + cameraRatio, worldMax.x - cameraRatio);
         smoothPos = Vector3.Lerp(this.transform.position, new Vector3(camX, camY, this.transform.position.z), smoothSpeed);
