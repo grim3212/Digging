@@ -1016,6 +1016,8 @@ GameObject:
   - component: {fileID: 1266540653}
   - component: {fileID: 1266540652}
   - component: {fileID: 1266540655}
+  - component: {fileID: 1266540657}
+  - component: {fileID: 1266540656}
   m_Layer: 0
   m_Name: MainCamera
   m_TagString: MainCamera
@@ -1030,7 +1032,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1266540650}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a160d838ff8b4b4693ac20007e008c7, type: 3}
   m_Name: 
@@ -1121,7 +1123,39 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 752278361}
-  smoothSpeed: 0.5
+  smoothSpeed: 1
+--- !u!114 &1266540656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1266540650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a93288a50e28b248911f21b241a982c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ppwzCamera: {fileID: 1266540653}
+--- !u!114 &1266540657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1266540650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82832c42a65308346a867eddc30e7170, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pixelsPerUnit: 32
+  pixelsPerUnitScale: 1
+  zoomScaleMax: 3
+  zoomScaleStart: 1
+  zoomScaleMin: 1
+  smoovZoom: 1
+  smoovZoomDuration: 1
 --- !u!4 &1533500109 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6414518175029869315, guid: 3425113268cddfe4ca17140da2821be7, type: 3}
