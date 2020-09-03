@@ -1122,6 +1122,8 @@ MonoBehaviour:
   zoomScaleMin: 1
   smoovZoom: 1
   smoovZoomDuration: 1
+  pixelPerfectZoom: 0
+  nonPixelPerfectZoomIncrement: 0.5
 --- !u!4 &1533500109 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6414518175029869315, guid: 3425113268cddfe4ca17140da2821be7, type: 3}

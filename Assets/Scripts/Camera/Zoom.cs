@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Zoom : MonoBehaviour {
-	[SerializeField]
-	private Camera ppwzCamera;
+	public Camera ppwzCamera;
 	private PixelPerfect ppwz;
 
 	void Start () {

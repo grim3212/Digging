@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PixelPerfect : MonoBehaviour {
-	[SerializeField]
-	private Transform player;
-	[SerializeField]
-	private float smoothFollowSpeed = 1f;
+	public Transform player;
+	public float smoothFollowSpeed = 1f;
 
 	private Vector2 worldMin;
 	private Vector2 worldMax;
@@ -16,20 +14,19 @@ public class PixelPerfect : MonoBehaviour {
 	private float cameraRatio;
 	private Vector3 smoothPos;
 
-	[SerializeField]
-	private float pixelsPerUnit = 32;
-	[SerializeField] // Uncomment if you want to watch scaling in the editor
-	private float pixelsPerUnitScale = 1;
-	[SerializeField]
-	private float zoomScaleMax = 10f;
-	[SerializeField]
-	private float zoomScaleStart = 1f;
-	[SerializeField]
-	private float zoomScaleMin = 1f;
-	[SerializeField]
-	private bool smoovZoom = true;
-	[SerializeField]
-	private float smoovZoomDuration = 0.5f; // In seconds
+	public float pixelsPerUnit = 32;
+	public float pixelsPerUnitScale = 1;
+	public float zoomScaleMax = 10f;
+	public float zoomScaleStart = 1f;
+	public float zoomScaleMin = 1f;
+	public bool smoovZoom = true;
+	public float smoovZoomDuration = 0.5f; // In seconds
+
+
+	public bool pixelPerfectZoom = true;
+	public float nonPixelPerfectZoomIncrement = 0.5f;
+
+	public float zoomIncrement { get { return pixelPerfectZoom ? 1 : nonPixelPerfectZoomIncrement; } }
 
 	private int screenHeight;
 
@@ -65,7 +62,7 @@ public class PixelPerfect : MonoBehaviour {
 				zoomInterpolation = (Time.time - zoomStartTime) / smoovZoomDuration;
 			}
 			else {
-				zoomInterpolation = 1; // express to the end
+				zoomInterpolation = zoomIncrement; // express to the end
 			}
 			pixelsPerUnitScale = Mathf.Lerp (zoomCurrentValue, zoomNextValue, zoomInterpolation);
 			UpdateCameraScale ();
@@ -126,14 +123,14 @@ public class PixelPerfect : MonoBehaviour {
 	public void ZoomIn () {
 		if (!midZoom) {
 			SetUpSmoovZoom ();
-			zoomNextValue = Mathf.Min (pixelsPerUnitScale + 1, zoomScaleMax);
+			zoomNextValue = Mathf.Min (pixelsPerUnitScale + zoomIncrement, zoomScaleMax);
 		}
 	}
 
 	public void ZoomOut () {
 		if (!midZoom) {
 			SetUpSmoovZoom ();
-			zoomNextValue = Mathf.Max (pixelsPerUnitScale - 1, zoomScaleMin);
+			zoomNextValue = Mathf.Max (pixelsPerUnitScale - zoomIncrement, zoomScaleMin);
 		}
 	}
 }
