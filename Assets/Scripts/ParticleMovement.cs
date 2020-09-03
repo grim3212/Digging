@@ -14,9 +14,9 @@ public class ParticleMovement : MonoBehaviour {
 		// GetParticles is allocation free because we reuse the m_Particles buffer between updates
 		int numParticlesAlive = m_System.GetParticles (m_Particles);
 
-        if(numParticlesAlive <= 0) {
-            Destroy(this.gameObject);
-        }
+		if (numParticlesAlive <= 0) {
+			Destroy (this.gameObject);
+		}
 
 		// Change only the particles that are alive
 		for (int i = 0; i < numParticlesAlive; i++) {

@@ -39,7 +39,7 @@ public class Pathfinding : MonoBehaviour {
 	}
 
 	public void Reset () {
-		StopCoroutine(this.coroutine);
+		StopCoroutine (this.coroutine);
 		this.isMoving = false;
 		this.transform.position = this.spawnPos;
 	}
