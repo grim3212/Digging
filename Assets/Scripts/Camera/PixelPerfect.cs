@@ -5,6 +5,18 @@ using UnityEngine;
 
 public class PixelPerfect : MonoBehaviour {
 	[SerializeField]
+	private Transform player;
+	[SerializeField]
+	private float smoothFollowSpeed = 1f;
+
+	private Vector2 worldMin;
+	private Vector2 worldMax;
+	private float camY, camX;
+	private float camOrthsize;
+	private float cameraRatio;
+	private Vector3 smoothPos;
+
+	[SerializeField]
 	private float pixelsPerUnit = 32;
 	[SerializeField] // Uncomment if you want to watch scaling in the editor
 	private float pixelsPerUnitScale = 1;
@@ -32,6 +44,10 @@ public class PixelPerfect : MonoBehaviour {
 	public float currentZoomScale { get { return pixelsPerUnitScale; } }
 
 	void Start () {
+		Bounds localBounds = World.Instance.Colliders.localBounds;
+		worldMin = World.Instance.Colliders.transform.TransformPoint (localBounds.min);
+		worldMax = World.Instance.Colliders.transform.TransformPoint (localBounds.max);
+
 		screenHeight = Screen.height;
 		cameraComponent = gameObject.GetComponent<Camera> ();
 		cameraComponent.orthographic = true;
@@ -49,11 +65,22 @@ public class PixelPerfect : MonoBehaviour {
 				zoomInterpolation = (Time.time - zoomStartTime) / smoovZoomDuration;
 			}
 			else {
-				zoomInterpolation = 1f; // express to the end
+				zoomInterpolation = 1; // express to the end
 			}
 			pixelsPerUnitScale = Mathf.Lerp (zoomCurrentValue, zoomNextValue, zoomInterpolation);
 			UpdateCameraScale ();
 		}
+	}
+
+	void LateUpdate () {
+		// These values could change with the zoom
+		camOrthsize = cameraComponent.orthographicSize;
+		cameraRatio = cameraComponent.aspect * camOrthsize;
+
+		camY = Mathf.Clamp (this.player.position.y, worldMin.y + camOrthsize, worldMax.y - camOrthsize);
+		camX = Mathf.Clamp (this.player.position.x, worldMin.x + cameraRatio, worldMax.x - cameraRatio);
+		smoothPos = Vector3.Lerp (this.transform.position, new Vector3 (camX, camY, this.transform.position.z), smoothFollowSpeed);
+		this.transform.position = new Vector3 (camX, camY, this.transform.position.z);
 	}
 
 	private void UpdateCameraScale () {
@@ -70,7 +97,7 @@ public class PixelPerfect : MonoBehaviour {
 		zoomInterpolation = 0f;
 	}
 
-	public void SetPixelsPerUnit (int pixelsPerUnitValue) {
+	public void SetPixelsPerUnit (float pixelsPerUnitValue) {
 		pixelsPerUnit = pixelsPerUnitValue;
 		UpdateCameraScale ();
 	}
@@ -104,7 +131,9 @@ public class PixelPerfect : MonoBehaviour {
 	}
 
 	public void ZoomOut () {
-		SetUpSmoovZoom ();
-		zoomNextValue = Mathf.Max (pixelsPerUnitScale - 1, zoomScaleMin);
+		if (!midZoom) {
+			SetUpSmoovZoom ();
+			zoomNextValue = Mathf.Max (pixelsPerUnitScale - 1, zoomScaleMin);
+		}
 	}
 }
